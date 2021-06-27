@@ -1,0 +1,17 @@
+{
+    "data": [
+        {
+            "id": 2,
+            "createDate": 1656775739,
+            "currentState": {
+                "username": "VALERA"
+            },
+            "login": "VLAD",
+            "userActionType": "CREATE"
+        }
+    ],
+    "meta": {
+        "limit": 100,
+        "offset": 0
+    }
+}

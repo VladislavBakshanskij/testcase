@@ -1,0 +1,36 @@
+version: '3.2'
+
+services:
+  app:
+    image: testcase
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: app
+    depends_on:
+      - flyway
+    environment:
+      SPRING_DATASOURCE_USERNAME: test
+      SPRING_DATASOURCE_PASSWORD: test
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db/users?currentSchema=keyauto
+    ports:
+      - 8080:8080
+
+  flyway:
+    image: flyway/flyway:7.10.0-alpine
+    container_name: flyway-migration
+    command: -url=jdbc:postgresql://db/users -schemas=keyauto -user=test -password=test -connectRetries=30 migrate
+    depends_on:
+      - db
+    volumes:
+      - "./src/main/resources/db/migration:/flyway/sql"
+
+  db:
+    image: postgres:13.3-alpine
+    container_name: db
+    ports:
+      - 15452:5432
+    environment:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: users

@@ -1,0 +1,11 @@
+#!/usr/bin/bash
+
+docker run --rm
+    --name dbContainer
+    -e POSTGRES_USER=test
+    -e POSTGRES_PASSWORD=test
+    -e POSTGRES_DB=users
+    -p 15452:5432
+    -d postgres:13.3;
+
+docker run --rm --name migrationContainer --link dbContainer:db_host -v ./src/main/resources/db/migration:/flyway/sql boxfuse/flyway:6 -url=jdbc:postgresql://db_host:5432/users -user=test -password=test -connectRetries=30 -schemas=keyauto migrate;

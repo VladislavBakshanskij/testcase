@@ -1,0 +1,24 @@
+spring:
+  jpa:
+    database: postgresql
+    database-platform: com.example.demo.app.CustomPostgreSQLDialect
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: debug
+        type: trace
+
+db:
+  username: ${SPRING_DATASOURCE_USERNAME:test}
+  password: ${SPRING_DATASOURCE_PASSWORD:test}
+  driverClassName: org.postgresql.Driver
+  jdbcUrl: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:15452/users?currentSchema=keyauto}
+  maximumPoolSize: 20
+  minimumIdle: 1
+  idleTimeout: 60000

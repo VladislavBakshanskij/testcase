@@ -1,0 +1,80 @@
+version: '3'
+
+services:
+  app:
+    build:
+      context: ./testcase
+      dockerfile: Dockerfile
+    container_name: app
+    depends_on:
+      - user
+      - journal
+    ports:
+      - 8080:8080
+    environment:
+      SPRING_RABBITMQ_HOSTNAME: mq
+      SPRING_RABBITMQ_USERNAME: user
+      SPRING_RABBITMQ_PASSWORD: user
+
+
+  user:
+    build:
+      context: ./consumers/user
+      dockerfile: Dockerfile
+    container_name: user-consumer
+    depends_on:
+      - flyway
+      - db
+      - mq
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db/users?currentSchema=keyauto
+      SPRING_DATASOURCE_USERNAME: test
+      SPRING_DATASOURCE_PASSWORD: test
+      SPRING_RABBITMQ_HOSTNAME: mq
+      SPRING_RABBITMQ_USERNAME: user
+      SPRING_RABBITMQ_PASSWORD: user
+
+  journal:
+    build:
+      context: ./consumers/journal
+      dockerfile: Dockerfile
+    container_name: journal-consumer
+    depends_on:
+      - flyway
+      - db
+      - mq
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db/users?currentSchema=keyauto
+      SPRING_DATASOURCE_USERNAME: test
+      SPRING_DATASOURCE_PASSWORD: test
+      SPRING_RABBITMQ_HOSTNAME: mq
+      SPRING_RABBITMQ_USERNAME: user
+      SPRING_RABBITMQ_PASSWORD: user
+
+  flyway:
+    image: flyway/flyway:7-alpine
+    container_name: flyway-migration
+    command: -url=jdbc:postgresql://db/users -schemas=keyauto -user=test -password=test -connectRetries=30 migrate
+    depends_on:
+      - db
+    volumes:
+      - "./testcase/src/main/resources/db/migration:/flyway/sql"
+
+  db:
+    image: postgres:13.3-alpine
+    container_name: db
+    ports:
+      - 15452:5432
+    environment:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: users
+
+  mq:
+    image: rabbitmq:alpine
+    container_name: mq
+    ports:
+      - 5672:5672
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: user

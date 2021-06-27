@@ -1,0 +1,29 @@
+spring:
+  jpa:
+    database: postgresql
+    database-platform: com.example.journalconsumer.app.CustomPostgreSQLDialect
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:15452/users?currentSchema=keyauto}
+    username: ${SPRING_DATASOURCE_USERNAME:test}
+    password: ${SPRING_DATASOURCE_PASSWORD:test}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 1
+      idle-timeout: 60000
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOSTNAME:localhost}
+    port: ${SPRING_RABBITMQ_PORT:5672}
+    username: ${SPRING_RABBITMQ_USERNAME:guest}
+    password: ${SPRING_RABBITMQ_PASSWORD:guest}
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: debug
+        type: trace

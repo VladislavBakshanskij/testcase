@@ -1,0 +1,6 @@
+{
+    "message": "Validation error",
+    "errors": {
+        "post": "must not be blank"
+    }
+}
