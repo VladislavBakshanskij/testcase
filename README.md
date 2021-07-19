@@ -8,3 +8,11 @@ Run db migration:
 
 path to migration files:
 `<full_path>/withmq/testcase/src/main/resources/db/migration`
+
+
+OR
+
+JUST RUN IN DOCKER COMPOSE
+`docker-compose up`
+
+docker-compose.yml contain in directories withoutmq and withmq 
